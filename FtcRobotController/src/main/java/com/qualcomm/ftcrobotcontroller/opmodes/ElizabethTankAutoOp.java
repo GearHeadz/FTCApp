@@ -52,6 +52,8 @@ public class ElizabethTankAutoOp extends OpMode {
 	DcMotor motorRight2;
 	DcMotor motorLeft1;
 	DcMotor motorLeft2;
+	int v_state=0;
+	int howlong = 1000;
 
 	/**
 	 * Constructor
@@ -93,6 +95,92 @@ public class ElizabethTankAutoOp extends OpMode {
 		motorLeft2.setDirection(DcMotor.Direction.REVERSE);
 	}
 
+	public void GabeAuto(int v_state) {
+
+		float throttlel = -1;
+		float directionl = 1;
+		float throttler = 1;
+		float directionr = 1;
+		float right = throttler - directionr;
+		float left = throttlel + directionl;
+
+	switch (v_state) {
+		case 0:
+
+
+			// clip the right/left values so that the values never exceed +/- 1
+			right = Range.clip(right, -1, 1);
+			left = Range.clip(left, -1, 1);
+
+			// scale the joystick value to make it easier to control
+			// the robot more precisely at slower speeds.
+			right = (float) scaleInput(right);
+			left = (float) scaleInput(left);
+
+			// write the values to the motors
+			motorRight1.setPower(right);
+			motorRight2.setPower(right);
+			motorLeft1.setPower(left);
+			motorLeft2.setPower(left);
+
+		/*
+		 * Send telemetry data back to driver station. Note that if we are using
+		 * a legacy NXT-compatible motor controller, then the getPower() method
+		 * will return a null value. The legacy NXT-compatible motor controllers
+		 * are currently write only.
+		 */
+			telemetry.addData("Text", "*** Robot Data Case 0 ***");
+			telemetry.addData("left tgt pwr", "left  pwr: " + String.format("%.2f", left));
+			telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
+			v_state++;
+			break;
+
+		case 50:
+			right = -1;
+			left = -1;
+
+			// clip the right/left values so that the values never exceed +/- 1
+			right = Range.clip(right, -1, 1);
+			left = Range.clip(left, -1, 1);
+
+			// scale the joystick value to make it easier to control
+			// the robot more precisely at slower speeds.
+			right = (float) scaleInput(right);
+			left = (float) scaleInput(left);
+
+			// write the values to the motors
+			motorRight1.setPower(right);
+			motorRight2.setPower(right);
+			motorLeft1.setPower(left);
+			motorLeft2.setPower(left);
+
+		/*
+		 * Send telemetry data back to driver station. Note that if we are using
+		 * a legacy NXT-compatible motor controller, then the getPower() method
+		 * will return a null value. The legacy NXT-compatible motor controllers
+		 * are currently write only.
+		 */
+			telemetry.addData("Text", "*** Robot Data Case 50 ***");
+			telemetry.addData("left tgt pwr", "left  pwr: " + String.format("%.2f", left));
+			telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
+			v_state++;
+			break;
+		case 99:
+
+
+			telemetry.addData("Text", "*** Robot Data Case 99 ***");
+			motorRight1.setPower(0);
+			motorRight2.setPower(0);
+			motorLeft1.setPower(0);
+			motorLeft2.setPower(0);
+			break;
+
+		default:
+			//This must mean we're done.
+			telemetry.addData("Text", "*** Robot Data Default ***");
+			break;
+	}
+}
 	/*
 	 * This method will be called repeatedly in a loop
 	 * 
@@ -101,55 +189,21 @@ public class ElizabethTankAutoOp extends OpMode {
 	@Override
 	public void loop() {
 
-
-		float throttlel = -1;
-		float directionl = 1;
-		float throttler = -1;
-		float directionr = 1;
-		float right = throttler - directionr;
-		float left = throttlel + directionl;
-
-		// clip the right/left values so that the values never exceed +/- 1
-		right = Range.clip(right, -1, 1);
-		left = Range.clip(left, -1, 1);
-
-		// scale the joystick value to make it easier to control
-		// the robot more precisely at slower speeds.
-		right = (float)scaleInput(right);
-		left =  (float)scaleInput(left);
-		
-		// write the values to the motors
-		motorRight1.setPower(right);
-		motorRight2.setPower(right);
-		motorLeft1.setPower(left);
-		motorLeft2.setPower(left);
-
-		/*
-		 * Send telemetry data back to driver station. Note that if we are using
-		 * a legacy NXT-compatible motor controller, then the getPower() method
-		 * will return a null value. The legacy NXT-compatible motor controllers
-		 * are currently write only.
-		 */
-        telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
-        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
-		try {
-			wait(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		GabeAuto(v_state);
+		v_state++;
 		}
-		stop();
-	}
 
 	/*
 	 * Code to run when the op mode is first disabled goes here
 	 * 
 	 * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#stop()
 	 */
-	@Override
-	public void stop() {
+		@Override
+		public void stop ()
+		{
 
-	}
+		}
+
 
     	
 	/*
@@ -157,13 +211,14 @@ public class ElizabethTankAutoOp extends OpMode {
 	 * scaled value is less than linear.  This is to make it easier to drive
 	 * the robot more precisely at slower speeds.
 	 */
-	double scaleInput(double dVal)  {
-		double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
-				0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
-		
+
+	double scaleInput(double dVal) {
+		double[] scaleArray = {0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
+				0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00};
+
 		// get the corresponding index for the scaleInput array.
 		int index = (int) (dVal * 16.0);
-		
+
 		// index should be positive.
 		if (index < 0) {
 			index = -index;
@@ -185,5 +240,7 @@ public class ElizabethTankAutoOp extends OpMode {
 		// return scaled value.
 		return dScale;
 	}
-
 }
+
+
+
