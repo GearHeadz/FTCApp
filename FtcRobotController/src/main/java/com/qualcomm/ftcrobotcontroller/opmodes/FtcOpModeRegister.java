@@ -45,12 +45,13 @@ public class FtcOpModeRegister implements OpModeRegister {
     //manager.register("MatrixK9TeleOp", MatrixK9TeleOp.class);
     manager.register("ElizabethTeleOp", ElizabethTeleOp.class);
     manager.register("ElizabethTankTeleOp", ElizabethTankTeleOp.class);
-<<<<<<< HEAD
+
     manager.register("ElizabethTankAutoOp", ElizabethTankAutoOp.class);
+      manager.register("ExampleTankAutoOp", ExampleTankAutoOp.class);
     //manager.register("K9Line", K9Line.class);
-=======
+
    // manager.register("K9Line", K9Line.class);
->>>>>>> origin/master
+
     //manager.register ("PushBotAuto", PushBotAuto.class);
     //manager.register ("PushBotManual", PushBotManual.class);
 
